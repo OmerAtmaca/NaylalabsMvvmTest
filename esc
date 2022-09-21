@@ -1,0 +1,13 @@
+[1mdiff --git a/lib/services/login_service.dart b/lib/services/login_service.dart[m
+[1mindex e71e867..873fc8d 100644[m
+[1m--- a/lib/services/login_service.dart[m
+[1m+++ b/lib/services/login_service.dart[m
+[36m@@ -15,7 +15,7 @@[m [mclass LoginService   {[m
+ [m
+   Future<UserResponseModel?> fetchPostLogin(UserRequestModel model) async {[m
+     final response = await http.post([m
+[31m-      Uri.parse(_loginURL + _loginPath),[m
+[32m+[m[32m      Uri.parse(_loginURL ),[m
+       body: jsonEncode(model),[m
+       headers: <String, String>{[m
+         'Content-Type': 'application/json; charset=UTF-8',[m
