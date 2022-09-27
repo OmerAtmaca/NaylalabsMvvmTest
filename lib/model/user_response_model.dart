@@ -53,7 +53,7 @@ class LoginData {
   bool? shouldSendEmailAndSms;
   int? videoQAStarCounter;
   List<String>? skills;
-  List? identify;
+  List<String>? identify;
   String? sId;
   String? email;
   String? type;
@@ -134,12 +134,8 @@ class LoginData {
     shouldSendEmailAndSms = json['shouldSendEmailAndSms'];
     videoQAStarCounter = json['videoQAStarCounter'];
     skills = json['skills'].cast<String>();
-    if (json['identify'] != null) {
-      identify = [];
-      json['identify'].forEach((v) {
-        identify!.add( UserResponseModel.fromJson(v));
-      });
-    }
+    identify = json['identify'].cast<String>();
+    
     sId = json['_id'];
     email = json['email'];
     type = json['type'];
@@ -181,9 +177,8 @@ class LoginData {
     data['shouldSendEmailAndSms'] = shouldSendEmailAndSms;
     data['videoQAStarCounter'] = videoQAStarCounter;
     data['skills'] = skills;
-    if (identify != null) {
-      data['identify'] = identify!.map((v) => v.toJson()).toList();
-    }
+    data['identify'] = identify;
+   
     data['_id'] = sId;
     data['email'] = email;
     data['type'] = type;

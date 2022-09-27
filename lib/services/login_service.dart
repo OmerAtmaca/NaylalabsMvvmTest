@@ -1,17 +1,31 @@
 import 'dart:convert';
 import 'dart:io';
+
+
 import '../model/stories_model.dart';
 import '../core/shared_manager.dart';
 import 'package:http/http.dart' as http;
 import '../model/user_request_model.dart';
 import '../model/user_response_model.dart';
 
-class LoginService   {
+class LoginService  {
+  final List<Data> listData=[];
   final String _loginPath = "auth/login";
   final String _stories = "stories";
   final String _loginURL = "https://api.superstars.co/api/";
 
+  Future fetchUserLogin(String email, String password) async {
+    final response = await fetchPostLogin(UserRequestModel(email: email, password: password));
+    if (response != null) {
+      SharedManager.instance.saveStringValue(SharedKeys.TOKEN,response.data!.token ?? "");
+      
+      SharedManager.instance.saveStringValue(SharedKeys.PICTURE,response.data!.profilePic ?? "");
 
+      
+    } else {
+      return Exception('login error');
+    }
+  }
 
   Future<UserResponseModel?> fetchPostLogin(UserRequestModel model) async {
     final response = await http.post(
@@ -24,6 +38,7 @@ class LoginService   {
 
     if (response.statusCode == HttpStatus.ok) {
       return UserResponseModel.fromJson(jsonDecode(response.body));
+      
     }
     return null;
   }
@@ -41,17 +56,25 @@ class LoginService   {
     }
   }
 
+ 
   Future<List<Data>?> fetchUserGetLogin() async {
 
    
-    var token = await SharedManager.instance.getToken() ?? "";
+    var token = await SharedManager.instance.getStringValue(SharedKeys.TOKEN);
+   
     
-    final response = await fetchGetStories(token);
-
-    try {
+    final response = await fetchGetStories(token??"");
+    
+     try {
       if (response != null) {
         // story=response;
         if (response.statusCode == 200) {
+         if (response.data!=null) {
+           
+         }
+                 
+         
+
           return response.data;
         }
       }
@@ -61,6 +84,7 @@ class LoginService   {
      return Future.error(e);
     }
   }
+
 
  
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tryproject/view/login_view_model.dart';
+import 'package:tryproject/mvvm/login_view_model.dart';
 
 
 
@@ -81,9 +81,9 @@ class LoginView extends LoginViewModel {
                    if (_formKey.currentState!.validate()) {
                           
                          
-                          fetchUserLogin(controllerEmail.text, controllerPassword.text);
+                          userLoginToPage(controllerEmail.text, controllerPassword.text);
                         
-                          
+                          navigateToHome();
                         }
                 },
                 child:const Text(

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import '../services/login_service.dart';
 import 'custom_list_tile.dart';
 
-class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+class NetworkView extends StatefulWidget {
+  const NetworkView({super.key});
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  State<NetworkView> createState() => _NetworkViewState();
 }
 
-class _HomeViewState extends State<HomeView>
+class _NetworkViewState extends State<NetworkView>
     with AutomaticKeepAliveClientMixin {
   late final LoginService loginService;
   String token = "";
