@@ -101,20 +101,25 @@ late LoginService loginService;
                     
                   });
               },
-              child: Stack(
-                    children: [
-                      CircleAvatar(
-                        radius: 23,
-                        backgroundColor: _selectedPage==3?Colors.green:Colors.grey,
-                      child:   
-                      CircleAvatar(
-                        radius: 20,
-                        backgroundImage:NetworkImage(profPicture??"",scale: 0.5) ,
+              child: Column(
+                children: [
+                  Stack(
+                        children: [
+                          CircleAvatar(
+                            radius: 18,
+                            backgroundColor: _selectedPage==3?Colors.green:Colors.grey,
+                          child:   
+                          CircleAvatar(
+                            radius: 15,
+                            backgroundImage:NetworkImage(profPicture??"",scale: 0.5) ,
+                            
+                      ),)
                         
-                  ),)
-                    
-                    ],
-                  ),
+                        ],
+                      ),
+                      Text("Me")
+                ],
+              ),
             ),
              
             ],

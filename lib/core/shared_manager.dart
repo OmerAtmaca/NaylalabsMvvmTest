@@ -29,8 +29,20 @@ SharedPreferences? prefs;
 
     
   }
+   Future<bool> saveBoolValue(SharedKeys key, bool value) async {
+    var prefss=await _prefInst;
+    return  prefss.setBool(key.toString(), value);
+  }
+
+  
+  Future<bool?> getBoolValue(SharedKeys key)  async {
+    var prefss=await _prefInst;
+    return prefss.getBool(key.toString());
+
+    
+  }
 
 
 }
 
-enum SharedKeys { TOKEN, PICTURE,MODEL }
+enum SharedKeys { TOKEN, PICTURE,ISCLICK }

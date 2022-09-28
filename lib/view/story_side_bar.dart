@@ -5,22 +5,21 @@ import 'package:intl/intl.dart';
 import 'package:tryproject/core/shared_manager.dart';
 import 'package:tryproject/view/event_bus_page.dart';
 
-
 import '../model/stories_model.dart';
 
 EventBus eventBus = EventBus();
 
-  
 class StorySideBar extends StatefulWidget {
   StorySideBar(
       {super.key,
+      required this.isClick,
       required this.controller,
       required this.index,
       required this.dataList});
   final AnimationController controller;
   final int index;
   final List<Data>? dataList;
-
+  final bool isClick;
 
   @override
   State<StorySideBar> createState() => _StorySideBarState();
@@ -33,33 +32,33 @@ class _StorySideBarState extends State<StorySideBar> {
 
   List<String> dataMessage = [];
   String? userProfPicture;
-  bool boolNot = true;
-
-  bool _isScroll = false;
+  bool? boolNot;
+  int _pageIndex = 0;
+  bool _isScroll = true;
 
   @override
   void initState() {
     super.initState();
+
+    boolNot = widget.isClick;
     getData();
   }
 
-   getData() async {
-  
-
+  getData() async {
     var dataPicture =
         await SharedManager.instance.getStringValue(SharedKeys.PICTURE);
     if (mounted) {
       setState(() {
         userProfPicture = dataPicture;
-    
-      
       });
     }
   }
 
   _scrollTopTo() async {
-    _scroll.animateTo(_scroll.position.maxScrollExtent,
-        duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+    if (_scroll.hasClients) {
+      await _scroll.animateTo(_scroll.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+    }
   }
 
   @override
@@ -135,21 +134,11 @@ class _StorySideBarState extends State<StorySideBar> {
   Widget _profilImageButton(List<Data>? dataList, int index) {
     return GestureDetector(
       onTap: () {
-       
-          if (widget.controller.isCompleted) {
-            widget.controller.reverse().then((value) {
-              boolNot = !boolNot;
+        widget.controller.forward().then((value) {
+          boolNot = !boolNot!;
 
-              eventBus.fire(BusPage(isClick: boolNot));
-            }).then((value) => widget.controller.forward());
-          } else {
-            widget.controller.forward().then((value) {
-              boolNot = !boolNot;
-
-              eventBus.fire(BusPage(isClick: boolNot));
-            }).then((value) => widget.controller.reverse());
-          }
-    
+          eventBus.fire(BusPage(isClick: boolNot ?? true));
+        }).then((value) => widget.controller.reverse());
       },
       child: Stack(
           clipBehavior: Clip.none,
@@ -192,11 +181,9 @@ class _StorySideBarState extends State<StorySideBar> {
           builder: (context) {
             return StatefulBuilder(
               builder: (BuildContext context, setState) {
-                if (_isScroll) {
-                  WidgetsBinding.instance
-                      .addPostFrameCallback((_) => _scrollTopTo());
-                  _isScroll = false;
-                }
+                WidgetsBinding.instance
+                    .addPostFrameCallback((_) => _scrollTopTo());
+
                 return _bottomSheetBar(context, setState);
               },
             );
@@ -220,8 +207,12 @@ class _StorySideBarState extends State<StorySideBar> {
                           widget.dataList![widget.index].commentCount! > 1
                       ? widget.dataList![widget.index].commentCount.toString() +
                           " Comments"
-                      :(widget.dataList!.length > 0)&&widget.dataList![widget.index].commentCount! > 0? widget.dataList![widget.index].commentCount.toString() +
-                          " Comment":""),
+                      : (widget.dataList!.length > 0) &&
+                              widget.dataList![widget.index].commentCount! > 0
+                          ? widget.dataList![widget.index].commentCount
+                                  .toString() +
+                              " Comment"
+                          : ""),
                   IconButton(
                       onPressed: (() {
                         Navigator.pop(context);
@@ -251,12 +242,15 @@ class _StorySideBarState extends State<StorySideBar> {
                         title: Row(
                       children: [
                         CircleAvatar(
-                          backgroundImage:NetworkImage(userProfPicture??"")),
-                       
-                        SizedBox(width: 10,),
+                            backgroundImage:
+                                NetworkImage(userProfPicture ?? "")),
+                        SizedBox(
+                          width: 10,
+                        ),
                         Expanded(
-                          child: Text(
-                              (dataMessage.length > 0 ? dataMessage[index] : "")),
+                          child: Text((dataMessage.length > 0
+                              ? dataMessage[index]
+                              : "")),
                         ),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -268,7 +262,7 @@ class _StorySideBarState extends State<StorySideBar> {
                                   color: Colors.grey,
                                   size: 25,
                                 )),
-                                Text("1")
+                            Text("1")
                           ],
                         )
                       ],
@@ -285,7 +279,7 @@ class _StorySideBarState extends State<StorySideBar> {
               Row(
                 children: [
                   CircleAvatar(
-                    backgroundImage: NetworkImage(userProfPicture??""),
+                    backgroundImage: NetworkImage(userProfPicture ?? ""),
                     radius: 20,
                   ),
                   SizedBox(
@@ -305,7 +299,7 @@ class _StorySideBarState extends State<StorySideBar> {
                               setState(() {
                                 dataMessage.add(_controllerMessage.text);
                                 List.from(dataMessage).reversed.toList();
-                                _isScroll = true;
+
                                 _controllerMessage.clear();
                               });
                             },

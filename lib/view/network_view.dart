@@ -25,6 +25,7 @@ class _NetworkViewState extends State<NetworkView>
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         _appBar,
@@ -88,7 +89,7 @@ class _NetworkViewState extends State<NetworkView>
   bool get wantKeepAlive => false;
 
   Widget get _appBar => Container(
-        height: 150,
+        height: 0,
         child: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,

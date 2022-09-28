@@ -5,6 +5,7 @@ import 'package:tryproject/services/login_service.dart';
 import 'package:tryproject/view/event_bus_page.dart';
 import 'package:tryproject/view/story_description.dart';
 import 'package:tryproject/view/story_side_bar.dart';
+import 'package:tryproject/view/video_view.dart';
 
 class StoriesView extends StatefulWidget {
   const StoriesView({super.key});
@@ -14,14 +15,14 @@ class StoriesView extends StatefulWidget {
 }
 
 class _StoriesViewState extends State<StoriesView>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late AnimationController _controller;
   late LoginService loginService;
 
   bool _isForYou = true;
   int pageIndex = 0;
   late PageController _pageController;
-  bool? _boolNot;
+  bool _boolNot=true;
   List<Data>? dataList = [];
   String? userProfPicture;
 
@@ -31,17 +32,15 @@ class _StoriesViewState extends State<StoriesView>
     _pageController = PageController();
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 600));
-
-    getBusEvent();
     getData();
+
   }
 
   getBusEvent() {
     eventBus.on<BusPage>().listen((event) {
       if (mounted) {
-        setState(() {
-          _boolNot = event.isClick;
-        });
+        _boolNot = event.isClick;
+        setState(() {});
       }
     });
   }
@@ -62,6 +61,7 @@ class _StoriesViewState extends State<StoriesView>
 
   @override
   Widget build(BuildContext context) {
+       
     TextStyle? style1 = Theme.of(context).textTheme.bodyText1!.copyWith(
         fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold);
     TextStyle? style2 = Theme.of(context)
@@ -72,25 +72,34 @@ class _StoriesViewState extends State<StoriesView>
         fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold);
     TextStyle? style4 = Theme.of(context).textTheme.bodyText1!.copyWith(
         fontSize: 1, color: Colors.white, fontWeight: FontWeight.bold);
+ getBusEvent();
     return Scaffold(
         extendBodyBehindAppBar: false,
         body: SafeArea(
             child: Stack(children: [
           PageView.builder(
+            
               physics: BouncingScrollPhysics(),
               controller: _pageController,
               onPageChanged: (int page) {
                 setState(() {
                   pageIndex = page;
+         
                 });
               },
               scrollDirection: Axis.vertical,
               itemCount: 5,
               itemBuilder: (context, index) {
                 return Stack(alignment: Alignment.bottomCenter, children: [
-                  Container(
-                    color: Colors.amber,
-                  ),
+                  VideoPage(
+                      thumbnail: (dataList!.length > 0)
+                          ? dataList![index].videoUrl.toString()
+                          : "",
+                      currentIndex: index,
+                      pageIndex: pageIndex,
+                      videoURL: (dataList!.length > 0)
+                          ? dataList![index].videoUrl.toString()
+                          : ""),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -101,7 +110,14 @@ class _StoriesViewState extends State<StoriesView>
                               flex: 3,
                               child: Container(
                                 height: MediaQuery.of(context).size.height / 4,
-                                child: StoryDesc(),
+                                child: StoryDesc(
+                                  caption: (dataList!.length > 0)
+                                      ? dataList![index].caption
+                                      : "",
+                                  title: (dataList!.length > 0)
+                                      ? dataList![index].title
+                                      : "",
+                                ),
                               )),
                           Expanded(
                               flex: 1,
@@ -109,6 +125,7 @@ class _StoriesViewState extends State<StoriesView>
                                 height:
                                     MediaQuery.of(context).size.height / 2.2,
                                 child: StorySideBar(
+                                  isClick: _boolNot ,
                                   controller: _controller,
                                   index: index,
                                   dataList: dataList,
@@ -121,7 +138,7 @@ class _StoriesViewState extends State<StoriesView>
                   ),
                 ]);
               }),
-          (_boolNot ?? true)
+          (_boolNot)
               ? (dataList?.length ?? 0) > 0
                   ? _customAppBar(pageIndex, style1, style2, style3)
                   : SizedBox(
@@ -344,4 +361,8 @@ class _StoriesViewState extends State<StoriesView>
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
