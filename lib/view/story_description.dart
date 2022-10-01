@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-
 class StoryDesc extends StatefulWidget {
   const StoryDesc({super.key, required this.title, required this.caption});
-final String? title;
-final String? caption;
+  final String? title;
+  final String? caption;
   @override
   State<StoryDesc> createState() => _StoryDescState();
 }
@@ -19,7 +18,7 @@ class _StoryDescState extends State<StoryDesc> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Text(
-            widget.title??"",
+            widget.title ?? "",
             maxLines: 4,
             style: Theme.of(context).textTheme.bodyText1!.copyWith(
                 fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),
@@ -30,8 +29,9 @@ class _StoryDescState extends State<StoryDesc> {
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical,
-              child: Text(widget.caption??"",
-              style: TextStyle(color: Colors.white),
+              child: Text(
+                widget.caption ?? "",
+                style: TextStyle(color: Colors.white),
               ),
             ),
           )

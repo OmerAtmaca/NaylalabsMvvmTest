@@ -18,7 +18,7 @@ class VideoPage extends StatefulWidget {
 }
 
 class _VideoPageState extends State<VideoPage> {
-  bool _isPlay=true;
+  bool _isPlay = true;
   late VideoPlayerController _controller;
   late Future _initializeVideoPlayer;
 
@@ -29,8 +29,8 @@ class _VideoPageState extends State<VideoPage> {
     _controller = VideoPlayerController.network(widget.videoURL);
     _initializeVideoPlayer = _controller.initialize();
     _controller.setLooping(true);
-
-    print(widget.videoURL);
+    _controller.play();
+    
   }
 
   @override
@@ -41,45 +41,39 @@ class _VideoPageState extends State<VideoPage> {
   }
 
   void _pausePlay() {
-    _isPlay?_controller.play():_controller.pause();
-                
-                setState(() {
-                  _isPlay=!_isPlay;
-                });
+    _isPlay ?_controller.pause(): _controller.play() ; 
+
+    setState(() {
+      _isPlay = !_isPlay;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    (widget.pageIndex == widget.currentIndex&&_isPlay)
-        ? _controller.play
-        : _controller.pause();
+   
     return Container(
       color: Colors.black,
-      
       child: FutureBuilder(
         future: _initializeVideoPlayer,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator(color: Colors.white));
+
+            return Center(
+                child: CircularProgressIndicator(color: Colors.white));
           } else if (snapshot.connectionState == ConnectionState.done) {
             return GestureDetector(
               onTap: (() {
                 _pausePlay();
               }),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  VideoPlayer(_controller),
-                  IconButton(onPressed: (){
-                  
-                  }, icon:  Icon(_isPlay?Icons.play_arrow:Icons.pause,size: 70),
-                  
-                  color: Colors.white.withOpacity(_isPlay?0:0.5),
-                  
-                  )
-                ]
-                
-                ),
+              child: Stack(alignment: Alignment.center, children: [
+                VideoPlayer(_controller),
+                IconButton(
+                  onPressed: () {},
+                  icon:
+                      Icon(_isPlay ? Icons.play_arrow : Icons.pause, size: 70),
+                  color: Colors.white.withOpacity(_isPlay ? 0 : 0.5),
+                )
+              ]),
             );
           } else {
             return Container(

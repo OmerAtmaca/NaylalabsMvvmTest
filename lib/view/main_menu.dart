@@ -111,7 +111,7 @@ late LoginService loginService;
                           child:   
                           CircleAvatar(
                             radius: 15,
-                            backgroundImage:NetworkImage(profPicture??"",scale: 0.5) ,
+                            backgroundImage:NetworkImage(profPicture??"https://www.technice.com.tw/wp-content/plugins/buddyboss-platform/bp-core/images/profile-avatar-buddyboss.png",scale: 0.5) ,
                             
                       ),)
                         

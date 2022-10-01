@@ -30,16 +30,26 @@ class CustomListItem extends StatelessWidget {
       children: <Widget>[
         Expanded(
             flex: 3,
-            child: Container(
-              decoration: BoxDecoration(
-                color: const Color(0xff7c94b6),
-                image: DecorationImage(
-                  image: NetworkImage(thumbnail),
-                  fit: BoxFit.cover,
+            child: Stack(children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xff7c94b6),
+                  image: DecorationImage(
+                    image: NetworkImage(thumbnail),
+                    fit: BoxFit.cover,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                borderRadius: BorderRadius.circular(12),
               ),
-            )),
+              IconButton(
+                onPressed: (() {}),
+                icon: Icon(
+                  Icons.play_arrow,
+                  color: Colors.white,
+                  size: 30,
+                ),
+              )
+            ])),
         Expanded(
           flex: 5,
           child: _ArticleDescription(
